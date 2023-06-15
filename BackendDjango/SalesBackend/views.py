@@ -51,29 +51,6 @@ def update_product(request, pro_id):
         return Response(serializer.data)
     return Response(serializer.errors, status=400)
 
-# @api_view(['PUT'])
-# def update_product(request, pk):
-#     try:
-#         product = Product.objects.get(pk=pk)
-#     except Product.DoesNotExist:
-#         return Response({'error': 'Product not found'}, status=404)
-    
-#     if request.method == 'PUT':
-#         pro_name = request.data.get('pro_name')
-#         quantity = request.data.get('quantity')
-#         buy_price = request.data.get('buy_price')
-#         sale_price = request.data.get('sale_price')
-
-#         # Update the product fields
-#         product.pro_name = pro_name
-#         product.quantity = quantity
-#         product.buy_price = buy_price
-#         product.sale_price = sale_price
-#         product.save()
-
-#         return Response({'message': 'Product updated successfully'})
-#     else:
-#         return Response({'error': 'Invalid request method'}, status=400)
 
 @api_view(['DELETE'])
 def delete_product(request, pro_id):
