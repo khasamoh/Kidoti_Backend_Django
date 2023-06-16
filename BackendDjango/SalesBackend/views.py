@@ -11,6 +11,12 @@ def user_list(request):
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+def user_list_byId(request,user_id):
+    user = User.objects.get(user_id=user_id)
+    serializer = UserSerializer(user)
+    return Response(serializer.data)
+
 @api_view(['POST'])
 def user_create(request):
     serializer = UserSerializer(data=request.data)
@@ -18,6 +24,12 @@ def user_create(request):
         serializer.save()
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
+
+@api_view(['DELETE'])
+def delete_user(request, user_id):
+    user = User.objects.get(user_id=user_id)
+    user.delete()
+    return Response(status=204)
 
 # End API for User
 
@@ -51,7 +63,6 @@ def update_product(request, pro_id):
         return Response(serializer.data)
     return Response(serializer.errors, status=400)
 
-
 @api_view(['DELETE'])
 def delete_product(request, pro_id):
     product = Product.objects.get(pro_id=pro_id)
@@ -66,6 +77,12 @@ def customer_list(request):
     serializer = CustomerSerializer(customers, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+def customer_list_byId(request,customer_id):
+    customer = Customer.objects.get(customer_id=customer_id)
+    serializer = CustomerSerializer(customer)
+    return Response(serializer.data)
+
 @api_view(['POST'])
 def customer_create(request):
     serializer = CustomerSerializer(data=request.data)
@@ -74,6 +91,11 @@ def customer_create(request):
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
 
+@api_view(['DELETE'])
+def delete_customer(request, customer_id):
+    customer = Customer.objects.get(customer_id=customer_id)
+    customer.delete()
+    return Response(status=204)
 
 # End API for Customer
 
@@ -91,4 +113,10 @@ def sale_create(request):
         serializer.save()
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
+
+@api_view(['DELETE'])
+def delete_sale(request, sales_id):
+    sales = Sales.objects.get(sales_id=sales_id)
+    sales.delete()
+    return Response(status=204)
 # End API for Sales
