@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import user_list, user_create, product_list,product_list_byId,customer_list_byId,user_list_byId,delete_user,delete_customer,delete_sale, delete_product, product_create, customer_list, customer_create, update_product, sale_list, sale_create
+from .views import user_list, user_create, get_sold_product,product_list,product_list_byId,customer_list_byId,user_list_byId,delete_user,delete_customer,delete_sale, delete_product, product_create, customer_list, customer_create, update_product, sale_create
 
 urlpatterns = [
     #user
@@ -23,7 +23,7 @@ urlpatterns = [
     path('customers/delete/<int:customer_id>/', delete_customer, name='delete_customer'),
     
     #Sales
-    path('sales/', sale_list, name='sale-list'),
+    path('sales/', get_sold_product, name='sale-list'),
     path('sales/create/', sale_create, name='sale-create'),
     path('sales/delete/<int:sales_id>/', delete_sale, name='delete_sale'),
     

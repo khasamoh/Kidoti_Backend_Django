@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -101,10 +102,20 @@ def delete_customer(request, customer_id):
 
 # Start API for Sales
 @api_view(['GET'])
-def sale_list(request):
-    sales = Sales.objects.all()
-    serializer = SalesSerializer(sales, many=True)
-    return Response(serializer.data)
+def get_sold_product(request):
+    sales = Sales.objects.select_related('product')
+    sold_data = [
+        {
+            'pro_name': sale.product.pro_name,
+            'sale_price': sale.product.sale_price,
+            'buy_price': sale.product.buy_price,
+            'quantity': sale.quantity,
+            # ... other fields you want to include
+        }
+        for sale in sales
+    ]
+    return JsonResponse({'sold_data': sold_data})
+
 
 @api_view(['POST'])
 def sale_create(request):
