@@ -18,7 +18,7 @@ def login_view(request):
             login(request, user)
             return JsonResponse({'message': 'Login successful'})
         else:
-            return JsonResponse({'error': 'Invalid credentials'}, status=400)
+            return JsonResponse({'error': 'Invalid credentials'}, status=401)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
 
