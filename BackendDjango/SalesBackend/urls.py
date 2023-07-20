@@ -1,9 +1,9 @@
 from django.urls import path
 
-from .views import login_view,user_list, user_create, get_sold_product,product_list,product_list_byId,customer_list_byId,user_list_byId,delete_user,delete_customer,delete_sale, delete_product, product_create, customer_list, customer_create, update_product, sale_create
+from .views import login,user_list, user_create, get_sold_product,product_list,product_list_byId,customer_list_byId,user_list_byId,delete_user,delete_customer,delete_sale, delete_product, product_create, customer_list, customer_create, update_product, sale_create
 
 urlpatterns = [
-    path('login/', login_view, name='login'),
+    path('login/', login, name='login'),
     #user
     path('users/', user_list, name='user-list'),
     path('users/<int:user_id>/', user_list_byId, name='user_list_byId'),

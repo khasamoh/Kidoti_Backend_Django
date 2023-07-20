@@ -4,25 +4,37 @@ from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.response import Response
+from django.contrib.auth.hashers import check_password
+from django.contrib.auth.models import User
 from SalesBackend.models import User,Product,Customer,Sales
 from .serializers import UserSerializer, ProductSerializer, SalesSerializer, CustomerSerializer
 
 
 #Login
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return JsonResponse({'message': 'Login successful'})
+@api_view(['POST'])
+def login(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return Response({'message': 'User not found'}, status=404)
+
+    if user.check_password(password, user.password):
+        if user.is_verified:
+            userid = user.user_id
+            return Response({
+                'message': 'Valid login',
+                'user_id': userid
+            })
         else:
-            return JsonResponse({'error': 'Invalid credentials'}, status=401)
+            return Response({
+                'message': 'User not valid'
+            })
     else:
-        return JsonResponse({'error': 'Invalid request method'}, status=400)
-
-
+        return Response({'message': 'Invalid credentials'}, status=401)
+        
 # Start API for User
 @api_view(['GET'])
 def user_list(request):
