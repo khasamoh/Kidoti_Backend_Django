@@ -1,3 +1,4 @@
+from datetime import datetime, date
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
@@ -9,7 +10,8 @@ from django.contrib.auth.models import User
 from SalesBackend.models import User,Product,Customer,Sales
 from .serializers import UserSerializer, ProductSerializer, SalesSerializer, CustomerSerializer
 
-
+current_date = datetime.now().date()
+formatted_date = current_date.strftime('%B %d, %Y')
 #Login
 @api_view(['POST'])
 def login(request):
@@ -140,16 +142,35 @@ def get_sold_product(request):
     sales = Sales.objects.select_related('product')
     sold_data = [
         {
+            'sales_id': sale.sales_id,
             'pro_name': sale.product.pro_name,
             'sale_price': sale.product.sale_price,
             'buy_price': sale.product.buy_price,
+            'datetime': sale.datetime,
             'quantity': sale.quantity,
-            # ... other fields you want to include
         }
         for sale in sales
     ]
     return JsonResponse({'sold_data': sold_data})
 
+@api_view(['GET'])
+def get_todaysold_product(request):
+    today = date.today()
+    sales = Sales.objects.filter(datetime__date=today).select_related('product')
+    
+    sold_data = [
+        {
+            'sales_id': sale.sales_id,
+            'pro_name': sale.product.pro_name,
+            'sale_price': sale.product.sale_price,
+            'buy_price': sale.product.buy_price,
+            'datetime': sale.datetime,
+            'quantity': sale.quantity,
+        }
+        for sale in sales
+    ]
+    
+    return JsonResponse({'sold_data': sold_data})
 
 @api_view(['POST'])
 def sale_create(request):
@@ -165,3 +186,19 @@ def delete_sale(request, sales_id):
     sales.delete()
     return Response(status=204)
 # End API for Sales
+
+#Count
+@api_view(['GET'])
+def user_count(request):
+    num_rows = User.objects.count()
+    return Response({'num_rows': num_rows})
+
+@api_view(['GET'])
+def product_count(request):
+    num_rows = Product.objects.count()
+    return Response({'num_rows': num_rows})
+
+@api_view(['GET'])
+def customer_count(request):
+    num_rows = Customer.objects.count()
+    return Response({'num_rows': num_rows})
