@@ -202,3 +202,22 @@ def product_count(request):
 def customer_count(request):
     num_rows = Customer.objects.count()
     return Response({'num_rows': num_rows})
+
+@api_view(['GET'])
+def total_todaysold_product(request):
+    today = date.today()
+    sales = Sales.objects.filter(datetime__date=today).select_related('product')
+    total_sales = 0
+    Total_Sales = [
+        {
+            'sale_price': sale.product.sale_price,
+            'quantity': sale.quantity,
+            'total': sale.quantity * sale.product.sale_price,
+        }
+        for sale in sales
+    ]
+    
+    for sale_data in Total_Sales:
+        total_sales += sale_data['total'] 
+    
+    return JsonResponse({'TotalSales': Total_Sales, 'TotalSalesAmount': total_sales})
